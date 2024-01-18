@@ -1,0 +1,35 @@
+﻿@page "/restoreemp/{Id:int}"
+@using BlazorApp1.Data
+@using BlazorApp1.Models
+@inject EmployeeService EmployeeService
+@inject NavigationManager NavigationManager
+<h3>Restore records</h3>
+<button class="btn btn-outline-primary" @onclick="EmployeeRestoreAsync">Restore</button>
+
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private async Task EmployeeRestoreAsync()
+    {
+        try
+        {
+            int result = await EmployeeService.EmployeeRestoretAsync(Id);
+
+            if (result > 0)
+            {
+                NavigationManager.NavigateTo("/employeedb");
+            }
+            else
+            {
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting employee: {ex.Message}");
+        }
+    }
+}

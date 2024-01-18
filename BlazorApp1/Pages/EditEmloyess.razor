@@ -1,0 +1,117 @@
+﻿@page "/editemployee/{id:int?}"
+@using BlazorApp1.Data
+@using BlazorApp1.Models
+@inject EmployeeService EmployeeService
+@inject NavigationManager NavigationManager
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<div class="container mt-5">
+    <h4>EDIT EMPLOYEE</h4>
+    <form @onsubmit="UpdateEmployee">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Name" @bind="employee.Name" required />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="dob">DOB</label>
+                    <input type="text" class="form-control" id="dob" placeholder="DOB" @bind="employee.DOB" required />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" class="form-control" id="location" placeholder="Location" @bind="employee.Location" required />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="designation">Designation</label>
+                    <input type="text" class="form-control" id="designation" placeholder="Designation" @bind="employee.Designation" required />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Email Address" @bind="employee.Email_Address" required />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select class="form-control" id="gender" @bind="employee.Gender" required>
+                        <option value="" disabled selected>-- Select --</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-success">Update</button>
+                <button type="submit" class="btn btn-info" @onclick="backtolist">Back</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@code {
+    private GetEmployeeByIDResult employee = new GetEmployeeByIDResult();
+    private EmpTable model = new EmpTable();
+
+    [Parameter]
+    public int id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            int employeeId = id;
+            model = await EmployeeService.GetResultAsync(employeeId);
+            employee = new();
+            employee.ID = model.Id;
+            employee.Name = model.Name;
+            employee.DOB = model.Dob;
+            employee.Location = model.Location;
+            employee.Designation = model.Designation;
+            employee.Gender = model.Gender;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching employee data: {ex.Message}");
+        }
+    }
+
+    private async Task UpdateEmployee()
+    {
+        try
+        {
+            await EmployeeService.EditEmployeeAsync(
+                employee.ID,
+                employee.Name,
+                employee.DOB,
+                employee.Location,
+                employee.Designation,
+                employee.Email_Address,
+                employee.Deleted=true,
+                employee.Gender
+
+          );
+
+            NavigationManager.NavigateTo("/employeedb");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error updating employee: {ex.Message}");
+        }
+    }
+
+    private async Task backtolist()
+    {
+        await Task.Delay(0);
+        NavigationManager.NavigateTo("/employeedb");
+    }
+}

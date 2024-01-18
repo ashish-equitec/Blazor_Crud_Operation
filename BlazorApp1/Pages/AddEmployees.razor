@@ -1,0 +1,194 @@
+﻿@page "/addemployee"
+@using BlazorApp1.Data
+@using BlazorApp1.Models
+@inject EmployeeService EmployeeService
+@inject NavigationManager NavigationManager
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<div class="container mt-5">
+    <h4>ADD NEW EMPLOYEE</h4>
+    <EditForm Model="@emp" OnValidSubmit="AddEmployee">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="name">Name</label>
+                <InputText class="form-control" id="name" @bind-Value="emp.Name" />
+                <ValidationMessage For="@(() => emp.Name)" />
+            </div>
+            <div class="form-group col-md-4">
+                <label for="dob">DOB</label>
+                <InputText class="form-control" id="dob" @bind-Value="emp.DOB" />
+                <ValidationMessage For="@(() => emp.DOB)" />
+            </div>
+            <div class="form-group col-md-4">
+                <label for="dob">DOB</label>
+                <InputText class="form-control" id="dob" @bind-Value="emp.Location" />
+                <ValidationMessage For="@(() => emp.Location)" />
+            </div>
+            <div class="form-group col-md-4">
+                <label for="dob">DOB</label>
+                <InputText class="form-control" id="dob" @bind-Value="emp.Designation" />
+                <ValidationMessage For="@(() => emp.Designation)" />
+            </div>
+            <div class="form-group col-md-4">
+                <label for="dob">DOB</label>
+                <InputText class="form-control" id="dob" @bind-Value="emp.Email_Address" />
+                <ValidationMessage For="@(() => emp.Email_Address)" />
+            </div>
+
+            <div class="form-group col-md-12 text-center">
+                <label>Skills</label>
+                <div class="form-check form-check-inline">
+                    @foreach (var skill in presentSkills)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="@($"sk{skill.Id}")"
+                                   checked="@getSkills.Contains(skill.Id)"
+                                   @onchange="@(e => BoxSkills(skill.Id))" />
+                            <label class="form-check-label" for="@($"sk{skill.Id}")">@skill.Skills</label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                <button type="submit" class="btn btn-success">ADD</button>
+                <button type="submit" class="btn btn-info" @onclick="backtolist">Back</button>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    EmployeeViewResult emp = new EmployeeViewResult();
+    private async Task AddEmployee()
+    {
+        int newEmployee1 = await EmployeeService.AddEmployeeAsync(emp);
+    }
+    private async Task ?backtolist()
+    {
+        NavigationManager.NavigateTo("/employeedb");
+    }
+
+    private List<GetSkilsResult> presentSkills = new List<GetSkilsResult>();
+    private List<int> getSkills = new List<int>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        presentSkills = await EmployeeService.GetSkils();
+    }
+
+    private void BoxSkills(int skillId)
+    {
+        if (getSkills.Contains(skillId))
+            getSkills.Remove(skillId);
+        else
+            getSkills.Add(skillId);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* @page "/addemployee"
+@using BlazorApp1.Data
+@using BlazorApp1.Models
+@inject EmployeeService EmployeeService
+@inject NavigationManager NavigationManager
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<div class="container mt-5">
+    <h4>ADD NEW EMPLOYEE</h4>
+    <form @onsubmit="AddEmployee">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Name" @bind="emp.Name" required />
+            </div>
+            <div class="form-group col-md-4">
+                <label for="dob">DOB</label>
+                <input type="text" class="form-control" id="dob" placeholder="DOB" @bind="emp.DOB" required />
+            </div>
+            <div class="form-group col-md-4">
+                <label for="location">Location</label>
+                <input type="text" class="form-control" id="location" placeholder="Location" @bind="emp.Location" required />
+            </div>
+            <div class="form-group col-md-4">
+                <label for="designation">Designation</label>
+                <input type="text" class="form-control" id="designation" placeholder="Designation" @bind="emp.Designation" required />
+            </div>
+            <div class="form-group col-md-4">
+                <label for="email">Email Address</label>
+                <input type="email" class="form-control" id="email" placeholder="Email Address" @bind="emp.Email_Address" required />
+            </div>
+            <div class="form-group col-md-4">
+                <label for="gender">Gender</label>
+                <select class="form-control" id="gender" @bind="emp.Gender" required>
+                    <option value="select">- - select - -</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-12 text-center">
+                <label>Skills</label>
+                <div class="form-check form-check-inline">
+                    @foreach (var skill in presentSkills)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="@($"sk{skill.Id}")"
+                                   checked="@getSkills.Contains(skill.Id)"
+                                   @onchange="@(e => BoxSkills(skill.Id))" />
+                            <label class="form-check-label" for="@($"sk{skill.Id}")">@skill.Skills</label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                <button type="submit" class="btn btn-success">ADD</button>
+                <button type="submit" class="btn btn-info" @onclick="backtolist">Back</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@code {
+    EmployeeViewResult emp = new EmployeeViewResult();
+    private async Task AddEmployee()
+    {
+        int newEmployee1 = await EmployeeService.AddEmployeeAsync(emp);
+    }
+    private async Task backtolist()
+    {
+        NavigationManager.NavigateTo("/employeedb");
+    }
+
+    private List<GetSkilsResult> presentSkills = new List<GetSkilsResult>();
+    private List<int> getSkills = new List<int>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        presentSkills = await EmployeeService.GetSkils();
+    }
+
+    private void BoxSkills(int skillId)
+    {
+        if (getSkills.Contains(skillId))
+            getSkills.Remove(skillId);
+        else
+            getSkills.Add(skillId);
+    }
+} *@

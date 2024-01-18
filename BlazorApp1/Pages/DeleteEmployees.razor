@@ -1,0 +1,28 @@
+﻿@page "/deleteemployee/{id:int}"
+@using BlazorApp1.Data
+@using BlazorApp1.Models
+@inject EmployeeService EmployeeService
+@inject NavigationManager NavigationManager
+
+<h3>Delete Employee</h3>
+
+<p>Are you sure you want to delete this employee?</p>
+
+<button class="btn btn-primary" @onclick="DeleteEmployeetAsync">Delete</button>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private async Task DeleteEmployeetAsync()
+    {
+        try
+        {
+            int result = await EmployeeService.EmployeeDeleteAsync(Id); 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting employee: {ex.Message}");
+        }
+    }
+}

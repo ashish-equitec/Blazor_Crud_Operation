@@ -1,0 +1,65 @@
+﻿@page "/softdelete"
+@using BlazorApp1.Data
+@using BlazorApp1.Models
+@inject EmployeeService EmployeeService
+@inject NavigationManager NavigationManager
+<div class="text-center">
+    <h4>DELETED EMPLOYEE DATA</h4>
+</div>
+<br />
+<button type="submit" class="btn btn-outline-success" @onclick="backtolist">Back to list</button>
+
+<pre>       </pre>
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>NAME</th>
+            <th>DOB</th>
+            <th>DESIGNATION</th>
+            <th>EMAIL ADDRESS</th>
+            <th>GENDER</th>
+            <th>LOCATION</th>
+            <th>ACTION</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var emp in employee)
+        {
+            <tr>
+                <td>@emp.Name</td>
+                <td>@emp.DOB</td>
+                <td>@emp.Designation</td>
+                <td>@emp.Email_Address</td>
+                <td>@emp.Gender</td>
+                <td>@emp.Location</td>
+                <td><button class="btn btn-outline-primary" @onclick="() => NavigateToRestore(emp.ID)">Restore</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    List<EmployeeSoftDeleteResult> employee = new List<EmployeeSoftDeleteResult>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            employee = await EmployeeService.SoftDeleteAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching data: {ex.Message}");
+        }
+    }
+
+    public void NavigateToRestore(int id)
+    {
+        NavigationManager.NavigateTo($"/restoreemp/{id}");
+    }
+    private async Task backtolist()
+    {
+        NavigationManager.NavigateTo("/employeedb");
+    }
+}
