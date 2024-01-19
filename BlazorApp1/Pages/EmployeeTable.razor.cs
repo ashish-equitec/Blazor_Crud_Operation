@@ -33,7 +33,6 @@ namespace BlazorApp1.Pages
                 Console.WriteLine("Error: " + ex.Message);
             }
         }
-
         public void NavigateToAddEmployee()
         {
             NavigationManager.NavigateTo("/addemployee");

@@ -15,23 +15,54 @@ namespace BlazorApp1.Data
             return await _dbConnection.Procedures.EmployeeViewAsync();
         }
 
-        public async Task<int> AddEmployeeAsync(EmployeeViewResult emp)
+        public async Task<int> AddEmployeeAsync(string Name, string DOB, string Location, string Designation, string Email_Address, string Gender, List<int>skillIds)
         {
-            int result = await _dbConnection.Procedures.EmployeeAddAsync(emp.Name ?? string.Empty, emp.DOB ?? string.Empty, emp.Location ?? string.Empty, emp.Designation ?? string.Empty, emp.Email_Address ?? string.Empty, emp.Gender ?? string.Empty, true);
+            List <EmployeeViewResult> getResult;
+            int result = await _dbConnection.Procedures.EmployeeAddAsync(Name ?? string.Empty, DOB ?? string.Empty, Location ?? string.Empty, Designation ?? string.Empty, Email_Address ?? string.Empty, Gender ?? string.Empty, true);
+
+            int EmpId = 0;
+            foreach (var employee in skillIds)
+            {
+                getResult = await _dbConnection.Procedures.EmployeeViewAsync();
+
+                var employeeId = getResult.Where(emp => emp.Email_Address == Email_Address) 
+                  .Select(emp => emp.ID).FirstOrDefault();
+                EmpId = employeeId;
+                break;
+            }
+            foreach (var skillId in skillIds)
+            {
+                await _dbConnection.Procedures.InsertEmployeeSkillsByIdAsync(EmpId, skillId);
+            }
 
             return result;
         }
-        public async Task<EmpTable> GetResultAsync(int id)
+        public Task<EmpTable> GetResultAsync(int id)
         {
             var emp = _dbConnection.EmpTables.Where(x => x.Id == id).FirstOrDefault(); ;
-            return emp;
-
+            return Task.FromResult<EmpTable>(emp);
         }
-        public async Task EditEmployeeAsync(int ID, string Name, string DOB, string Location, string Designation, string Email_Address, bool? deleted, string Gender, OutputParameter<int>? returnValue = null)
+        public async Task EditEmployeeAsync(int ID, string Name, string DOB, string Location, string Designation, string Email_Address, bool? deleted, string Gender, List<int> skillIds)
         {
-            await _dbConnection.Procedures.EmployeeUpdateAsync(ID, Name, DOB, Location, Designation, Email_Address, deleted, Gender);
-        }
+            await _dbConnection.Procedures.EmployeeUpdateAsync(ID, Name, DOB, Location, Designation, Email_Address, Gender, deleted);
 
+            List<EmployeeViewResult> getResult;
+
+            int EmpId = 0;
+            foreach (var employee in skillIds)
+            {
+                getResult = await _dbConnection.Procedures.EmployeeViewAsync();
+
+                var employeeId = getResult.Where(emp => emp.Email_Address == Email_Address && emp.DOB==DOB && emp.Designation==Designation && emp.Location==Location && emp.Name==Name)
+                  .Select(emp => emp.ID).FirstOrDefault();
+                EmpId = employeeId;
+                break;
+            }
+            foreach (var skillId in skillIds)
+            {
+                await _dbConnection.Procedures.InsertEmployeeSkillsByIdAsync(EmpId, skillId);
+            }
+        }
 
         public async Task<int> EmployeeDeleteAsync(int Id)
         {

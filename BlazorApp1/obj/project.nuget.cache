@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nvSjtbeayRfK28v/fYNSL9xhAq9KtYPjGO2b+FMEeuhajbDykXxyU7geRdRdugxjp2E67J0AyABWOxoNBTVzFQ==",
+  "dgSpecHash": "RcPX+mOtCVd8vEyBVjAIqhctFUphIJrVwO4T3QKFUNeKEi3BAMUukyJySok5Wh/fbMsz1bJaCH40XTuH+EwZmg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Equitec-user\\Documents\\MVC\\BlazorApp1\\BlazorApp1\\BlazorApp1.csproj",
+  "projectFilePath": "C:\\Users\\Equitec-user\\Documents\\MVC\\BlazorApp1\\Blazor_Crud_Operation\\BlazorApp1\\BlazorApp1.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Equitec-user\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\Equitec-user\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",

@@ -50,6 +50,20 @@
                     </select>
                 </div>
             </div>
+            <div class="col-md-6">
+                <label>Skills</label>
+                <div class="form-check form-check-inline">
+                    @foreach (var skill in presentSkills)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="@($"sk{skill.Id}")"
+                                   checked="@SkillId.Contains(skill.Id)"
+                                   @onchange="@(e => BoxSkills(skill.Id))" />
+                            <label class="form-check-label" for="@($"sk{skill.Id}")">@skill.Skills</label>
+                        </div>
+                    }
+                </div>
+            </div>
             <div class="col-md-12">
                 <button type="submit" class="btn btn-success">Update</button>
                 <button type="submit" class="btn btn-info" @onclick="backtolist">Back</button>
@@ -83,6 +97,8 @@
         {
             Console.WriteLine($"Error fetching employee data: {ex.Message}");
         }
+
+        presentSkills = await EmployeeService.GetSkils();
     }
 
     private async Task UpdateEmployee()
@@ -97,8 +113,8 @@
                 employee.Designation,
                 employee.Email_Address,
                 employee.Deleted=true,
-                employee.Gender
-
+                employee.Gender,
+                SkillId
           );
 
             NavigationManager.NavigateTo("/employeedb");
@@ -113,5 +129,16 @@
     {
         await Task.Delay(0);
         NavigationManager.NavigateTo("/employeedb");
+    }
+
+    private List<GetSkilsResult> presentSkills = new List<GetSkilsResult>();
+    private List<int> SkillId = new List<int>();
+
+    private void BoxSkills(int skillId)
+    {
+        if (SkillId.Contains(skillId))
+            SkillId.Remove(skillId);
+        else
+            SkillId.Add(skillId);
     }
 }

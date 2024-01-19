@@ -60,6 +60,10 @@
          "ObjectType": 1
       },
       {
+         "Name": "[dbo].[InsertEmployeeSkillsById]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[RestoreD]",
          "ObjectType": 1
       }

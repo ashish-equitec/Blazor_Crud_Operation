@@ -19,6 +19,7 @@
         try
         {
             int result = await EmployeeService.EmployeeDeleteAsync(Id); 
+            NavigationManager.NavigateTo("/employeedb");
         }
         catch (Exception ex)
         {
