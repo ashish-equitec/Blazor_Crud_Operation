@@ -98,5 +98,9 @@ namespace BlazorApp1.Data
         {
             return await _dbConnection.Procedures.GetSkilsAsync();
         }
+        public async Task<List<GetEmployeeByIDResult>> GetDetails(int Id)
+        {
+            return await _dbConnection.Procedures.GetEmployeeByIDAsync(Id);
+        }
     }
 }

@@ -7,22 +7,24 @@
     <h4>DELETED EMPLOYEE DATA</h4>
 </div>
 <br />
-<button type="submit" class="btn btn-outline-success" @onclick="backtolist">Back to list</button>
+<button type="submit" class="btn btn-outline-success" @onclick="Backtolist">Back to list</button>
 
 <pre>       </pre>
-<table class="table table-bordered table-striped">
-    <thead class="thead-dark">
-        <tr>
-            <th style="background-color: #9b59b6; color: #fff;">ID</th>
-            <th style="background-color: #3498db; color: #fff;">NAME</th>
-            <th style="background-color: #e74c3c; color: #fff;">DOB</th>
-            <th style="background-color: #2ecc71; color: #fff;">LOCATION</th>
-            <th style="background-color: #f39c12; color: #fff;">DESIGNATION</th>
-            <th style="background-color: #9b59b6; color: #fff;">EMAIL ID</th>
-            <th style="background-color: #e67e22; color: #fff;">GENDER</th>
-            <th style="background-color: #2ecc71; color: #fff;">ACTION</th>
-        </tr>
-    </thead>
+<div class="table_detailsemply">
+    <table class="employee_table loan_table" width="100%">
+        <thead class="thead-dark">
+            <tr>
+                <th class="bg_primary color_white">ID</th>
+                <th class="bg_primary color_white">NAME</th>
+                <th class="bg_primary color_white">DOB</th>
+                <th class="bg_primary color_white">LOCATION</th>
+                <th class="bg_primary color_white">DESIGNATION</th>
+                <th class="bg_primary color_white">EMAIL ID</th>
+                <th class="bg_primary color_white">GENDER</th>
+                <th class="bg_primary color_white">SKILLS</th>
+                <th class="bg_primary color_white">ACTION</th>
+            </tr>
+        </thead>
     <tbody>
         @foreach (var emp in employee)
         {
@@ -34,34 +36,12 @@
                 <td>@emp.Designation</td>
                 <td>@emp.Email_Address</td>
                 <td>@emp.Gender</td>
+                <td>@result[emp.ID]</td>
                 <td><button class="btn btn-outline-primary" @onclick="() => NavigateToRestore(emp.ID)">Restore</button></td>
             </tr>
         }
     </tbody>
 </table>
 
+</div>
 
-@code {
-    List<EmployeeSoftDeleteResult> employee = new List<EmployeeSoftDeleteResult>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            employee = await EmployeeService.SoftDeleteAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error fetching data: {ex.Message}");
-        }
-    }
-
-    public void NavigateToRestore(int id)
-    {
-        NavigationManager.NavigateTo($"/restoreemp/{id}");
-    }
-    public void backtolist()
-    {
-        NavigationManager.NavigateTo("/employeedb");
-    }
-}

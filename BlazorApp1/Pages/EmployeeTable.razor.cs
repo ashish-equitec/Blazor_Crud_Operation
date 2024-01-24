@@ -49,5 +49,8 @@ namespace BlazorApp1.Pages
         {
             NavigationManager.NavigateTo($"/softdelete");
         }
+        
+
+     
     }
 }

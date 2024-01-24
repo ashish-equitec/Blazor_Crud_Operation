@@ -4,7 +4,139 @@
 @inject EmployeeService EmployeeService
 @inject NavigationManager NavigationManager
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+<div class="container mt-5">
+    <EditForm Model="employee" OnValidSubmit="UpdateEmployee">
+        <DataAnnotationsValidator />
+        <h1 class="colorBlue">
+            EDIT EMPLOYEE
+        </h1>
+        <ul class="row forumBox">
+            <li class="col-3 required">
+                <label class="inputLabel">
+                    Name
+                </label>
+            </li>
+            <li class="col-3">
+                <div class="form_inputBox">
+                    <InputText @bind-Value="employee.Name" class="form-control" maxlength="20" />
+                </div>
+                <div class="erroeText">
+                    <ValidationMessage For="(()=>employee.Name)"></ValidationMessage>
+                </div>
+            </li>
+
+            <li class="col-3 required">
+                <label class="inputLabel">
+                    Date of Birth
+                </label>
+            </li>
+            <li class="col-3">
+                <div class="form_inputBox">
+                    <InputText @bind-Value="employee.DOB" class="form-control" maxlength="100" />
+                </div>
+                <div class="erroeText">
+                    <ValidationMessage For="(()=>employee.DOB)"></ValidationMessage>
+                </div>
+            </li>
+
+            <li class="col-3">
+                <label class="inputLabel">
+                    Location
+                </label>
+            </li>
+            <li class="col-3">
+                <div class="form_inputBox">
+                    <InputText @bind-Value="employee.Location" class="form-control" maxlength="20" />
+                </div>
+                <div class="erroeText">
+                    <ValidationMessage For="(()=>employee.Location)"></ValidationMessage>
+                </div>
+            </li>
+
+            <li class="col-3 required">
+                <label class="inputLabel">
+                    Designation
+                </label>
+            </li>
+            <li class="col-3">
+                <div class="form_inputBox">
+                    <InputText @bind-Value="employee.Designation" class="form-control" maxlength="100" />
+                </div>
+                <div class="erroeText">
+                    <ValidationMessage For="(()=>employee.Designation)"></ValidationMessage>
+                </div>
+            </li>
+
+
+            <li class="col-3">
+                <label class="inputLabel">
+                    Email Address
+                </label>
+            </li>
+
+            <li class="col-3">
+                <div class="form_inputBox">
+                    <InputText @bind-Value="employee.Email_Address" class="form-control" maxlength="100" />
+                </div>
+                <div class="erroeText">
+                    <ValidationMessage For="(()=>employee.Email_Address)"></ValidationMessage>
+                </div>
+            </li>
+
+            <li class="col-3">
+                <label class="inputLabel">
+                    Gender
+                </label>
+            </li>
+            <li class="col-3">
+                <div class="form_inputBox">
+                    <select class="form-control" id="gender" @bind="employee.Gender">
+                        <option value="" disabled selected>-- Select --</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </li>
+
+            <li class="col-3">
+                <label class="inputLabel">
+                    Skills
+                </label>
+            </li>
+            <li class="col-3">
+                <div class="form_inputBox">
+                    <div class="form-check form-check-inline">
+                        @foreach (var skill in presentSkills)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="@($"sk{skill.Id}")"
+                                       checked="@SkillId.Contains(skill.Id)"
+                                       @onchange="@(e => BoxSkills(skill.Id))" />
+                                <label class="form-check-label" for="@($"sk{skill.Id}")">@skill.Skills</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </li>
+
+            <li class="col-12">
+                <div class="form_btns">
+                    <button type="submit" class="common_btn btnBlue">Save</button>
+                    <button class="common_btn btnWhite" @onclick="OnCancel">Cancel</button>
+                </div>
+            </li>
+        </ul>
+    </EditForm>
+</div>
+
+
+
+
+
+@* 
 <div class="container mt-5">
     <h4>EDIT EMPLOYEE</h4>
     <form @onsubmit="UpdateEmployee">
@@ -72,73 +204,4 @@
     </form>
 </div>
 
-@code {
-    private GetEmployeeByIDResult employee = new GetEmployeeByIDResult();
-    private EmpTable model = new EmpTable();
-
-    [Parameter]
-    public int id { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            int employeeId = id;
-            model = await EmployeeService.GetResultAsync(employeeId);
-            employee = new();
-            employee.ID = model.Id;
-            employee.Name = model.Name;
-            employee.DOB = model.Dob;
-            employee.Location = model.Location;
-            employee.Designation = model.Designation;
-            employee.Gender = model.Gender;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error fetching employee data: {ex.Message}");
-        }
-
-        presentSkills = await EmployeeService.GetSkils();
-    }
-
-    private async Task UpdateEmployee()
-    {
-        try
-        {
-            await EmployeeService.EditEmployeeAsync(
-                employee.ID,
-                employee.Name,
-                employee.DOB,
-                employee.Location,
-                employee.Designation,
-                employee.Email_Address,
-                employee.Deleted=true,
-                employee.Gender,
-                SkillId
-          );
-
-            NavigationManager.NavigateTo("/employeedb");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error updating employee: {ex.Message}");
-        }
-    }
-
-    private async Task backtolist()
-    {
-        await Task.Delay(0);
-        NavigationManager.NavigateTo("/employeedb");
-    }
-
-    private List<GetSkilsResult> presentSkills = new List<GetSkilsResult>();
-    private List<int> SkillId = new List<int>();
-
-    private void BoxSkills(int skillId)
-    {
-        if (SkillId.Contains(skillId))
-            SkillId.Remove(skillId);
-        else
-            SkillId.Add(skillId);
-    }
-}
+ *@
